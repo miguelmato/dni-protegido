@@ -219,6 +219,10 @@ SOLO VÁLIDA PARA [FINALIDAD]</textarea>
         <label>Texto al pie (opcional)
           <textarea id="footer" placeholder="Ej.: Copia entregada a Inmobiliaria X exclusivamente para el contrato de alquiler."></textarea>
         </label>
+        <label>Nombre del archivo
+          <input type="text" id="fileName" placeholder="dni_protegido" spellcheck="false" autocomplete="off">
+        </label>
+        <p class="hint" id="saveHint" hidden>Tu navegador no permite elegir carpeta desde la página: el archivo irá a Descargas, salvo que actives «Preguntar dónde guardar» en sus ajustes. En Chrome o Edge se abre el diálogo «Guardar como».</p>
       </fieldset>
 
       <button class="primary" id="makePdf" disabled>Generar PDF protegido</button>
@@ -783,8 +787,31 @@ function download(blob, name) {
   setTimeout(() => URL.revokeObjectURL(a.href), 5000);
 }
 const stamp = () => new Date().toISOString().slice(0, 10);
+const baseName = () => ($('#fileName').value.trim() || `dni_protegido_${stamp()}`)
+  .replace(/\.(pdf|jpe?g)$/i, '').replace(/[\\/:*?"<>|]+/g, '_');
+if (!window.showSaveFilePicker) $('#saveHint').hidden = false;
+
+// Diálogo «Guardar como» (Chrome/Edge). null = no disponible, false = cancelado
+async function pickFile(name, mime, ext) {
+  if (!window.showSaveFilePicker) return null;
+  try {
+    return await window.showSaveFilePicker({ suggestedName: name, types: [{ description: ext.toUpperCase(), accept: { [mime]: ['.' + ext] } }] });
+  } catch (e) {
+    return e.name === 'AbortError' ? false : null;
+  }
+}
+async function save(handle, blob, name) {
+  if (!handle) { download(blob, name); return name; }
+  const w = await handle.createWritable();
+  await w.write(blob); await w.close();
+  return handle.name;
+}
 
 $('#makePdf').onclick = async () => {
+  // El diálogo se abre antes de procesar: el navegador solo lo permite justo tras el clic
+  const name = baseName() + '.pdf';
+  const handle = await pickFile(name, 'application/pdf', 'pdf');
+  if (handle === false) return;
   status('Generando PDF…');
   await new Promise(r => setTimeout(r, 20));
   const o = opts();
@@ -793,15 +820,19 @@ $('#makePdf').onclick = async () => {
     const jpeg = new Uint8Array(await (await toJpeg(c, o.quality)).arrayBuffer());
     pages.push({ jpeg, w: c.width, h: c.height });
   }
-  download(buildPDF(pages, 'DNI - copia protegida'), `dni_protegido_${stamp()}.pdf`);
-  status('PDF descargado.');
+  const saved = await save(handle, buildPDF(pages, 'DNI - copia protegida'), name);
+  status(`PDF guardado: ${saved}`);
 };
 
 $('#makeJpg').onclick = async () => {
-  const o = opts();
-  const pages = renderPages(o, o.dpi);
-  for (let i = 0; i < pages.length; i++)
-    download(await toJpeg(pages[i], o.quality), `dni_protegido_${stamp()}${pages.length > 1 ? '_' + (i + 1) : ''}.jpg`);
+  const o = opts(), pages = renderPages(o, o.dpi);
+  for (let i = 0; i < pages.length; i++) {
+    const name = `${baseName()}${pages.length > 1 ? '_' + (i + 1) : ''}.jpg`;
+    const handle = await pickFile(name, 'image/jpeg', 'jpg');
+    if (handle === false) return;
+    await save(handle, await toJpeg(pages[i], o.quality), name);
+  }
+  status('JPG guardado.');
 };
 
 /* ---------- vista ---------- */
@@ -860,7 +891,7 @@ function syncOutputs() {
 }
 $('#panel').addEventListener('input', e => {
   syncOutputs();
-  if (e.target.name === 'mode') return;
+  if (e.target.name === 'mode' || e.target.id === 'fileName') return;
   SIDES.forEach(drawView);
   schedulePreview();
 });

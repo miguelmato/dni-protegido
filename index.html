@@ -1,0 +1,872 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<!-- Sin red: la página no puede cargar ni enviar nada fuera de tu ordenador -->
+<meta http-equiv="Content-Security-Policy" content="default-src 'none'; img-src 'self' blob: data:; style-src 'unsafe-inline'; script-src 'unsafe-inline'; base-uri 'none'; form-action 'none'">
+<title>Marca de agua para el DNI gratis y sin subirlo | DNI Protegido</title>
+<meta name="description" content="Pon marca de agua a tu DNI, tapa o pixela el número de soporte, pásalo a blanco y negro y descarga un PDF protegido. Gratis, sin registro y 100 % en tu navegador: tus fotos nunca se suben.">
+<meta name="robots" content="index, follow">
+<meta name="author" content="Miguel Mato">
+<meta name="theme-color" content="#2457d6">
+<link rel="canonical" href="https://miguelmato.github.io/dni-protegido/">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect x='4' y='12' width='56' height='40' rx='6' fill='%232457d6'/%3E%3Ccircle cx='20' cy='30' r='7' fill='%23fff'/%3E%3Crect x='14' y='40' width='12' height='4' rx='2' fill='%23fff'/%3E%3Crect x='32' y='24' width='20' height='4' rx='2' fill='%23fff'/%3E%3Crect x='32' y='32' width='14' height='4' rx='2' fill='%23fff'/%3E%3Cpath d='M6 50 58 14' stroke='%23ff5a4e' stroke-width='5'/%3E%3C/svg%3E">
+<meta property="og:type" content="website">
+<meta property="og:locale" content="es_ES">
+<meta property="og:site_name" content="DNI Protegido">
+<meta property="og:title" content="Marca de agua para el DNI, gratis y sin subirlo">
+<meta property="og:description" content="Tapa el número de soporte, añade marca de agua y descarga un PDF protegido. Todo ocurre en tu navegador.">
+<meta property="og:url" content="https://miguelmato.github.io/dni-protegido/">
+<meta property="og:image" content="https://miguelmato.github.io/dni-protegido/og-image.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="DNI Protegido: marca de agua y datos tapados en una copia del DNI">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Marca de agua para el DNI, gratis y sin subirlo">
+<meta name="twitter:description" content="Tapa el número de soporte, añade marca de agua y descarga un PDF protegido. Todo ocurre en tu navegador.">
+<meta name="twitter:image" content="https://miguelmato.github.io/dni-protegido/og-image.png">
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@graph": [
+    {
+      "@type": "WebApplication",
+      "name": "DNI Protegido",
+      "url": "https://miguelmato.github.io/dni-protegido/",
+      "description": "Herramienta gratuita para poner marca de agua al DNI, tapar o pixelar datos como el número de soporte, pasarlo a blanco y negro y exportarlo a un PDF aplanado. Funciona sin conexión y sin subir las fotos.",
+      "applicationCategory": "UtilitiesApplication",
+      "operatingSystem": "Cualquiera (navegador web)",
+      "inLanguage": "es",
+      "isAccessibleForFree": true,
+      "offers": { "@type": "Offer", "price": "0", "priceCurrency": "EUR" },
+      "author": { "@type": "Person", "name": "Miguel Mato", "url": "https://github.com/miguelmato" }
+    },
+    {
+      "@type": "FAQPage",
+      "mainEntity": [
+        { "@type": "Question", "name": "¿Se suben mis fotos del DNI a algún servidor?",
+          "acceptedAnswer": { "@type": "Answer", "text": "No. Todo el procesado ocurre en tu navegador y la página bloquea cualquier conexión de red. Tus fotos nunca salen de tu dispositivo." } },
+        { "@type": "Question", "name": "¿Por qué poner marca de agua al DNI?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Una marca de agua con el destinatario, la finalidad y la fecha impide que una copia de tu DNI se reutilice para otros trámites, como abrir cuentas o contratar servicios en tu nombre." } },
+        { "@type": "Question", "name": "¿Qué datos del DNI conviene tapar?",
+          "acceptedAnswer": { "@type": "Answer", "text": "El número de soporte (IDESP) y el CAN son los más sensibles, porque se usan para verificar el documento en trámites online. Tápalos salvo que el destinatario los necesite expresamente." } },
+        { "@type": "Question", "name": "¿Se puede quitar la marca de agua del PDF?",
+          "acceptedAnswer": { "@type": "Answer", "text": "Cada página del PDF es una única imagen en la que la marca de agua, las zonas tapadas y el ruido están integrados en los píxeles. No hay capas ni texto que se puedan eliminar." } }
+      ]
+    }
+  ]
+}
+</script>
+<style>
+  :root {
+    --bg: #f4f5f7; --card: #fff; --fg: #1d2129; --muted: #667085; --line: #d9dde3;
+    --accent: #2457d6; --accent-fg: #fff; --danger: #d92d20;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #14161a; --card: #1e2127; --fg: #e8eaed; --muted: #9aa1ac; --line: #343944; --accent: #5b8cff; --accent-fg: #0b1020; --danger: #ff6b5e; }
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--fg); font: 14px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif; }
+  header { padding: 18px 24px 8px; }
+  header h1 { margin: 0; font-size: 20px; }
+  header p { margin: 4px 0 0; color: var(--muted); }
+  main { display: grid; grid-template-columns: 1fr 320px; gap: 16px; padding: 16px 24px 32px; align-items: start; }
+  @media (max-width: 980px) { main { grid-template-columns: 1fr; } }
+  .box { background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 14px; }
+  .sides { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+  @media (max-width: 1300px) { .sides { grid-template-columns: 1fr; } }
+  .side h2, .box h2 { margin: 0 0 10px; font-size: 15px; }
+  .toolbar { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; align-items: center; }
+  button, .filebtn { font: inherit; border: 1px solid var(--line); background: var(--card); color: var(--fg); border-radius: 7px; padding: 5px 10px; cursor: pointer; }
+  button:hover, .filebtn:hover { border-color: var(--accent); }
+  button.primary { background: var(--accent); color: var(--accent-fg); border-color: var(--accent); font-weight: 600; padding: 9px 12px; width: 100%; }
+  button:disabled { opacity: .5; cursor: default; }
+  .filebtn input { display: none; }
+  .wrap { position: relative; border: 2px dashed var(--line); border-radius: 8px; min-height: 220px; display: grid; place-items: center; overflow: hidden; background: repeating-conic-gradient(#8881 0% 25%, transparent 0% 50%) 0 0 / 16px 16px; }
+  .wrap.over { border-color: var(--accent); }
+  .side:not(.loaded) .wrap { cursor: pointer; }
+  .side:not(.loaded) .wrap:hover { border-color: var(--accent); }
+  .wrap canvas { display: none; max-width: 100%; height: auto; touch-action: none; cursor: crosshair; }
+  .side.loaded .wrap { border-style: solid; }
+  .side.loaded .wrap canvas { display: block; }
+  .side.loaded .placeholder { display: none; }
+  .placeholder { color: var(--muted); text-align: center; padding: 20px; }
+  .zones { list-style: none; margin: 10px 0 0; padding: 0; display: flex; flex-wrap: wrap; gap: 6px; }
+  .zones li { border: 1px solid var(--line); border-radius: 999px; padding: 2px 4px 2px 10px; display: flex; align-items: center; gap: 4px; font-size: 12px; }
+  .zones li i { width: 9px; height: 9px; border-radius: 50%; display: inline-block; }
+  .zones li button { border: 0; padding: 0 6px; color: var(--danger); background: none; font-size: 15px; line-height: 1; }
+  aside { display: grid; gap: 16px; position: sticky; top: 12px; }
+  fieldset { border: 0; padding: 0; margin: 0 0 12px; }
+  legend { font-weight: 600; margin-bottom: 6px; padding: 0; }
+  label { display: block; margin: 6px 0; }
+  label.row { display: flex; align-items: center; gap: 8px; }
+  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+  .modes label { margin: 0; border: 1px solid var(--line); border-radius: 7px; padding: 6px 8px; cursor: pointer; display: flex; gap: 6px; align-items: center; }
+  .modes label:has(input:checked) { border-color: var(--accent); outline: 1px solid var(--accent); }
+  input[type=range] { width: 100%; }
+  textarea, select, input[type=text] { width: 100%; font: inherit; color: var(--fg); background: var(--bg); border: 1px solid var(--line); border-radius: 7px; padding: 6px 8px; }
+  textarea { resize: vertical; min-height: 56px; }
+  .lbl { display: flex; justify-content: space-between; color: var(--muted); font-size: 12px; }
+  .hint { color: var(--muted); font-size: 12px; margin: 4px 0 0; }
+  #preview { margin-top: 16px; }
+  #pages { display: flex; flex-wrap: wrap; gap: 16px; justify-content: center; }
+  #pages canvas { width: min(420px, 100%); height: auto; box-shadow: 0 2px 12px #0003; background: #fff; }
+  #status { min-height: 1.4em; color: var(--muted); font-size: 12px; margin-top: 8px; }
+  #prep { position: fixed; inset: 0; z-index: 10; background: rgba(0,0,0,.65); display: grid; place-items: center; padding: 16px; }
+  #prep[hidden] { display: none; }
+  .prep-box { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 14px; width: min(1100px, 100%); max-height: 100%; display: flex; flex-direction: column; gap: 10px; }
+  .prep-box h2 { margin: 0; font-size: 15px; }
+  .prep-stage { min-height: 0; display: grid; place-items: center; background: repeating-conic-gradient(#8882 0% 25%, transparent 0% 50%) 0 0 / 16px 16px; border-radius: 8px; }
+  #prepCanvas { display: block; max-width: 100%; max-height: 68vh; touch-action: none; cursor: crosshair; }
+  .prep-controls { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; }
+  .prep-controls label { margin: 0; }
+  .prep-controls .angle { flex: 1 1 220px; }
+  .prep-controls .primary { width: auto; padding: 6px 16px; }
+  .prep-controls .spacer { flex: 1 1 0; }
+  .info { max-width: 860px; margin: 0 auto; padding: 8px 24px 40px; font-size: 15px; line-height: 1.6; }
+  .info h2 { font-size: 19px; margin: 32px 0 8px; }
+  .info h3 { font-size: 15px; margin: 18px 0 4px; }
+  .info p, .info li { color: var(--fg); }
+  .info ol, .info ul { padding-left: 22px; }
+  .info a, footer a { color: var(--accent); }
+  footer { text-align: center; color: var(--muted); font-size: 13px; padding: 0 24px 32px; }
+</style>
+</head>
+<body>
+<header>
+  <h1>DNI Protegido: marca de agua para tu DNI, gratis y sin subirlo</h1>
+  <p>Tapa el número de soporte, pásalo a blanco y negro y descarga un PDF protegido. Todo se procesa en tu navegador, sin conexión: tus fotos nunca salen de tu dispositivo.</p>
+</header>
+
+<main>
+  <section>
+    <div class="sides">
+      <div class="side box" data-side="front">
+        <h2>Anverso</h2>
+        <div class="toolbar">
+          <label class="filebtn">Elegir foto<input type="file" accept="image/*"></label>
+          <button class="prep-btn">Recortar y girar</button>
+          <button class="undo">Deshacer zona</button>
+          <button class="clear">Borrar zonas</button>
+        </div>
+        <div class="wrap"><div class="placeholder">Arrastra aquí la foto del anverso<br>o pulsa «Elegir foto»</div><canvas></canvas></div>
+        <ul class="zones"></ul>
+      </div>
+      <div class="side box" data-side="back">
+        <h2>Reverso</h2>
+        <div class="toolbar">
+          <label class="filebtn">Elegir foto<input type="file" accept="image/*"></label>
+          <button class="prep-btn">Recortar y girar</button>
+          <button class="undo">Deshacer zona</button>
+          <button class="clear">Borrar zonas</button>
+        </div>
+        <div class="wrap"><div class="placeholder">Arrastra aquí la foto del reverso<br>o pulsa «Elegir foto»</div><canvas></canvas></div>
+        <ul class="zones"></ul>
+      </div>
+    </div>
+
+    <div id="preview" class="box">
+      <h2>Vista previa del PDF</h2>
+      <div id="pages"><p class="hint">Carga al menos una foto.</p></div>
+    </div>
+  </section>
+
+  <aside>
+    <div class="box" id="panel">
+      <fieldset>
+        <legend>Herramienta (arrastra sobre la foto)</legend>
+        <div class="modes">
+          <label><input type="radio" name="mode" value="solid" checked> Tapar</label>
+          <label><input type="radio" name="mode" value="pixel"> Pixelar</label>
+          <label><input type="radio" name="mode" value="blur"> Difuminar</label>
+        </div>
+        <p class="hint">Para nº de soporte, CAN o firma, «Tapar» es lo más seguro: el pixelado de texto pequeño a veces se puede adivinar.</p>
+        <label><span class="lbl">Tamaño de píxel <output id="pixOut"></output></span><input id="pix" type="range" min="1" max="8" step="0.5" value="3"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Imagen</legend>
+        <label class="row"><input id="gray" type="checkbox" checked> Blanco y negro</label>
+        <label><span class="lbl">Contraste <output id="contrastOut"></output></span><input id="contrast" type="range" min="50" max="200" value="110"></label>
+        <label><span class="lbl">Brillo <output id="brightOut"></output></span><input id="bright" type="range" min="-80" max="80" value="0"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>Marca de agua</legend>
+        <textarea id="wmText">COPIA PARA [DESTINATARIO]
+SOLO VÁLIDA PARA [FINALIDAD]</textarea>
+        <label class="row"><input id="wmDate" type="checkbox" checked> Añadir fecha de hoy</label>
+        <label><span class="lbl">Tamaño <output id="wmSizeOut"></output></span><input id="wmSize" type="range" min="2" max="10" step="0.5" value="6"></label>
+        <label><span class="lbl">Opacidad <output id="wmOpacityOut"></output></span><input id="wmOpacity" type="range" min="10" max="90" value="45"></label>
+        <label><span class="lbl">Ángulo <output id="wmAngleOut"></output></span><input id="wmAngle" type="range" min="0" max="90" value="25"></label>
+        <label><span class="lbl">Separación <output id="wmSpacingOut"></output></span><input id="wmSpacing" type="range" min="20" max="300" value="150"></label>
+        <label class="row">Color <input id="wmColor" type="color" value="#c00000"></label>
+        <label class="row"><input id="lines" type="checkbox" checked> Líneas de seguridad onduladas</label>
+        <label><span class="lbl">Ruido anti-borrado <output id="noiseOut"></output></span><input id="noise" type="range" min="0" max="40" value="20"></label>
+      </fieldset>
+
+      <fieldset>
+        <legend>PDF</legend>
+        <label>Disposición
+          <select id="layout"><option value="one">Ambas caras en una página</option><option value="two">Una cara por página</option></select>
+        </label>
+        <label>Tamaño del DNI
+          <select id="scale"><option value="real">Tamaño real (85,6 mm)</option><option value="x15">Ampliado ×1,5</option><option value="fit" selected>Ancho de página</option></select>
+        </label>
+        <label>Resolución
+          <select id="dpi"><option value="150">150 ppp (ligero)</option><option value="200" selected>200 ppp</option><option value="300">300 ppp</option></select>
+        </label>
+        <label><span class="lbl">Calidad JPEG <output id="qualityOut"></output></span><input id="quality" type="range" min="50" max="95" value="82"></label>
+        <label>Texto al pie (opcional)
+          <textarea id="footer" placeholder="Ej.: Copia entregada a Inmobiliaria X exclusivamente para el contrato de alquiler."></textarea>
+        </label>
+      </fieldset>
+
+      <button class="primary" id="makePdf" disabled>Generar PDF protegido</button>
+      <div style="height:6px"></div>
+      <button id="makeJpg" disabled style="width:100%">Descargar como JPG</button>
+      <div id="status"></div>
+    </div>
+  </aside>
+</main>
+
+<article class="info">
+  <h2>Cómo proteger una copia de tu DNI en 4 pasos</h2>
+  <ol>
+    <li><strong>Sube las fotos</strong> del anverso y el reverso. Se abren directamente en tu navegador; no se envían a ningún servidor.</li>
+    <li><strong>Recorta y endereza</strong> cada cara para quedarte solo con la tarjeta, con la proporción exacta del DNI.</li>
+    <li><strong>Tapa, pixela o difumina</strong> los datos que el destinatario no necesita, como el número de soporte o el CAN.</li>
+    <li><strong>Añade la marca de agua</strong> con quién recibe la copia, para qué y la fecha, y descarga el PDF.</li>
+  </ol>
+
+  <h2>Por qué poner marca de agua al DNI</h2>
+  <p>Inmobiliarias, empresas, hoteles o tiendas online suelen pedir una copia del DNI. Si esa copia se filtra o se reutiliza, alguien podría usarla para abrir cuentas, pedir créditos o contratar servicios en tu nombre. Una marca de agua que indique el destinatario, la finalidad y la fecha hace que la copia solo sirva para ese trámite, y deja constancia si se usa para otra cosa.</p>
+
+  <h2>Qué datos del DNI conviene tapar</h2>
+  <ul>
+    <li><strong>Número de soporte (IDESP):</strong> identifica la tarjeta física y se usa para verificar el documento en trámites online. Es el dato más importante a ocultar.</li>
+    <li><strong>CAN:</strong> el código de 6 cifras del DNI electrónico que permite leer el chip por NFC.</li>
+    <li><strong>Firma</strong> y, si no hacen falta, otros datos como el domicilio o el nombre de los padres del reverso.</li>
+  </ul>
+  <p>Para textos pequeños como el número de soporte, usa «Tapar» en lugar de «Pixelar»: el pixelado de texto a veces se puede reconstruir.</p>
+
+  <h2>Por qué la protección no se puede quitar</h2>
+  <p>Cada página del PDF es <strong>una sola imagen</strong> en la que la marca de agua, las zonas tapadas, las líneas de seguridad onduladas y un ruido aleatorio están fundidos en los píxeles. No hay capas, anotaciones ni texto que se puedan seleccionar o borrar, y el ruido y las líneas dificultan que un programa de retoque o de IA separe la marca de la imagen.</p>
+
+  <h2>Preguntas frecuentes</h2>
+  <h3>¿Se suben mis fotos del DNI a algún servidor?</h3>
+  <p>No. Todo el procesado ocurre en tu navegador y la página bloquea cualquier conexión de red mediante su política de seguridad. Puedes incluso desconectarte de internet después de abrirla.</p>
+  <h3>¿Es gratis?</h3>
+  <p>Sí, es gratuito, sin registro y de código abierto.</p>
+  <h3>¿Funciona en el móvil?</h3>
+  <p>Sí, funciona en cualquier navegador moderno de ordenador, tablet o móvil. Si tus fotos están en formato HEIC (iPhone) y no se abren, usa Safari o expórtalas como JPG.</p>
+  <h3>¿Es legal poner marca de agua al DNI?</h3>
+  <p>Sí. Añadir una marca de agua a una copia de tu propio DNI es una práctica recomendada para proteger tus datos. Esta herramienta no permite modificar los datos del documento, solo ocultarlos y marcarlos.</p>
+</article>
+
+<footer>
+  Código abierto en <a href="https://github.com/miguelmato/dni-protegido" rel="noopener">GitHub</a>. Hecho por Miguel Mato.
+</footer>
+
+<div id="prep" hidden>
+  <div class="prep-box">
+    <h2>Recortar y girar · <span id="prepSide"></span></h2>
+    <div class="prep-stage"><canvas id="prepCanvas"></canvas></div>
+    <div class="prep-controls">
+      <button id="prepL" title="Girar 90° a la izquierda">⟲ 90°</button>
+      <button id="prepR" title="Girar 90° a la derecha">⟳ 90°</button>
+      <label class="angle"><span class="lbl">Enderezar <output id="prepAngleOut">0°</output></span><input id="prepAngle" type="range" min="-45" max="45" step="0.25" value="0"></label>
+      <label class="row"><input id="prepLock" type="checkbox"> Proporción DNI</label>
+      <button id="prepReset">Restablecer</button>
+      <span class="spacer"></span>
+      <button id="prepCancel">Cancelar</button>
+      <button class="primary" id="prepApply">Aplicar</button>
+    </div>
+    <p class="hint">Arrastra sobre la foto para dibujar el recorte; luego tira de las esquinas o los lados para ajustarlo, o arrastra el interior para moverlo. Usa la cuadrícula para alinear los bordes del DNI al enderezar. Cambiar el recorte o el giro borra las zonas ya marcadas en esa cara.</p>
+  </div>
+</div>
+
+<script>
+'use strict';
+const $ = s => document.querySelector(s);
+const MAX_SRC = 2600;
+const COLORS = { pixel: '#2f7cf6', solid: '#ef4444', blur: '#a855f7' };
+const NAMES = { pixel: 'Pixelado', solid: 'Tapado', blur: 'Difuminado' };
+
+function newCanvas(w, h) { const c = document.createElement('canvas'); c.width = Math.max(1, Math.round(w)); c.height = Math.max(1, Math.round(h)); return c; }
+const clamp01 = v => Math.min(1, Math.max(0, v));
+const status = t => { $('#status').textContent = t; };
+
+function opts() {
+  return {
+    mode: document.querySelector('input[name=mode]:checked').value,
+    pix: +$('#pix').value,
+    gray: $('#gray').checked,
+    contrast: +$('#contrast').value / 100,
+    bright: +$('#bright').value,
+    wmText: $('#wmText').value,
+    wmDate: $('#wmDate').checked,
+    wmSize: +$('#wmSize').value,
+    wmOpacity: +$('#wmOpacity').value / 100,
+    wmAngle: +$('#wmAngle').value,
+    wmSpacing: +$('#wmSpacing').value / 100,
+    wmColor: $('#wmColor').value,
+    lines: $('#lines').checked,
+    noise: +$('#noise').value,
+    layout: $('#layout').value,
+    scale: $('#scale').value,
+    dpi: +$('#dpi').value,
+    quality: +$('#quality').value / 100,
+    footer: $('#footer').value.trim(),
+  };
+}
+
+/* ---------- caras ---------- */
+const SIDES = ['front', 'back'].map(key => {
+  const root = document.querySelector(`.side[data-side=${key}]`);
+  const s = { key, root, orig: null, prep: null, src: null, ver: 0, zones: [], proc: null, procKey: '', drag: null,
+              view: root.querySelector('canvas'), list: root.querySelector('.zones') };
+  const input = root.querySelector('input[type=file]');
+  input.addEventListener('change', () => { loadFile(s, input.files[0]); input.value = ''; });
+  root.querySelector('.prep-btn').onclick = () => { if (s.orig) openPrep(s, false); };
+  root.querySelector('.undo').onclick = () => { s.zones.pop(); changed(s); };
+  root.querySelector('.clear').onclick = () => { s.zones = []; changed(s); };
+
+  const wrap = root.querySelector('.wrap');
+  wrap.addEventListener('dragover', e => { e.preventDefault(); wrap.classList.add('over'); });
+  wrap.addEventListener('dragleave', () => wrap.classList.remove('over'));
+  wrap.addEventListener('drop', e => { e.preventDefault(); wrap.classList.remove('over'); loadFile(s, e.dataTransfer.files[0]); });
+  wrap.addEventListener('click', e => { if (!s.src && e.target !== s.view) input.click(); });
+
+  const v = s.view;
+  const pt = e => { const r = v.getBoundingClientRect(); return { x: clamp01((e.clientX - r.left) / r.width), y: clamp01((e.clientY - r.top) / r.height) }; };
+  v.addEventListener('pointerdown', e => { if (!s.src) return; v.setPointerCapture(e.pointerId); const p = pt(e); s.drag = { x0: p.x, y0: p.y, x1: p.x, y1: p.y }; });
+  v.addEventListener('pointermove', e => { if (!s.drag) return; const p = pt(e); s.drag.x1 = p.x; s.drag.y1 = p.y; drawView(s); });
+  const end = () => {
+    if (!s.drag) return;
+    const r = dragRect(s.drag); s.drag = null;
+    if (r.w > 0.005 && r.h > 0.005) s.zones.push({ ...r, type: opts().mode });
+    changed(s);
+  };
+  v.addEventListener('pointerup', end);
+  v.addEventListener('pointercancel', () => { s.drag = null; drawView(s); });
+  return s;
+});
+
+function dragRect(d) {
+  return { x: Math.min(d.x0, d.x1), y: Math.min(d.y0, d.y1), w: Math.abs(d.x1 - d.x0), h: Math.abs(d.y1 - d.y0) };
+}
+
+function loadFile(s, file) {
+  if (!file) return;
+  const url = URL.createObjectURL(file);
+  const img = new Image();
+  img.onload = () => {
+    const k = Math.min(1, MAX_SRC / Math.max(img.naturalWidth, img.naturalHeight));
+    const c = newCanvas(img.naturalWidth * k, img.naturalHeight * k);
+    c.getContext('2d').drawImage(img, 0, 0, c.width, c.height);
+    URL.revokeObjectURL(url);
+    s.orig = c;
+    s.prep = { rot90: 0, fine: 0, lock: false, crop: null };
+    status('');
+    openPrep(s, true);
+  };
+  img.onerror = () => { URL.revokeObjectURL(url); status('No se pudo abrir la imagen. Si es HEIC, expórtala como JPG o PNG.'); };
+  img.src = url;
+}
+
+/* ---------- preprocesado: recortar y girar ---------- */
+const DNI_RATIO = 85.6 / 54;
+const pc = $('#prepCanvas');
+const P = { s: null, isNew: false, base: null, rotated: null, rot90: 0, fine: 0, lock: false, rect: null, drag: null };
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const corners = r => [[r.x, r.y], [r.x + r.w, r.y], [r.x + r.w, r.y + r.h], [r.x, r.y + r.h]];
+
+// Gira la imagen un ángulo cualquiera; las esquinas que quedan vacías se rellenan de blanco
+function rotatedCanvas(img, deg) {
+  const r = deg * Math.PI / 180, cos = Math.abs(Math.cos(r)), sin = Math.abs(Math.sin(r));
+  const c = newCanvas(img.width * cos + img.height * sin, img.width * sin + img.height * cos), x = c.getContext('2d');
+  x.fillStyle = '#fff'; x.fillRect(0, 0, c.width, c.height);
+  x.translate(c.width / 2, c.height / 2); x.rotate(r);
+  x.imageSmoothingQuality = 'high';
+  x.drawImage(img, -img.width / 2, -img.height / 2);
+  return c;
+}
+
+function openPrep(s, isNew) {
+  P.s = s; P.isNew = isNew;
+  const k = Math.min(1, 1400 / Math.max(s.orig.width, s.orig.height));
+  P.base = newCanvas(s.orig.width * k, s.orig.height * k);
+  P.base.getContext('2d').drawImage(s.orig, 0, 0, P.base.width, P.base.height);
+  Object.assign(P, { rot90: s.prep.rot90, fine: s.prep.fine, lock: s.prep.lock });
+  $('#prepAngle').value = P.fine; $('#prepAngleOut').textContent = P.fine + '°';
+  $('#prepLock').checked = P.lock;
+  $('#prepSide').textContent = s.key === 'front' ? 'anverso' : 'reverso';
+  $('#prep').hidden = false;
+  updateRotated(s.prep.crop);
+}
+
+const normRect = () => ({ x: P.rect.x / pc.width, y: P.rect.y / pc.height, w: P.rect.w / pc.width, h: P.rect.h / pc.height });
+
+function updateRotated(crop) {
+  P.rotated = rotatedCanvas(P.base, P.rot90 * 90 + P.fine);
+  pc.width = P.rotated.width; pc.height = P.rotated.height;
+  const n = crop || { x: 0, y: 0, w: 1, h: 1 };
+  P.rect = { x: n.x * pc.width, y: n.y * pc.height, w: n.w * pc.width, h: n.h * pc.height };
+  if (!crop && P.lock) P.rect = fitRatio(P.rect);
+  drawPrep();
+}
+
+// Mayor rectángulo con proporción de DNI centrado dentro de r
+function fitRatio(r) {
+  const w = Math.min(r.w, r.h * DNI_RATIO), h = w / DNI_RATIO;
+  return { x: r.x + (r.w - w) / 2, y: r.y + (r.h - h) / 2, w, h };
+}
+
+// Rectángulo desde el ancla (ax, ay) hasta el puntero, respetando la proporción si está bloqueada
+function spanRect(ax, ay, px, py) {
+  let w = Math.abs(px - ax), h = Math.abs(py - ay);
+  if (!P.lock) return { x: Math.min(ax, px), y: Math.min(ay, py), w, h };
+  if (w / DNI_RATIO > h) h = w / DNI_RATIO; else w = h * DNI_RATIO;
+  const sx = px < ax ? -1 : 1, sy = py < ay ? -1 : 1;
+  const k = Math.min(1, (sx < 0 ? ax : pc.width - ax) / w, (sy < 0 ? ay : pc.height - ay) / h);
+  w *= k; h *= k;
+  return { x: sx < 0 ? ax - w : ax, y: sy < 0 ? ay - h : ay, w, h };
+}
+
+function drawPrep() {
+  const x = pc.getContext('2d'), W = pc.width, H = pc.height, r = P.rect;
+  const u = W / (pc.clientWidth || W);
+  x.drawImage(P.rotated, 0, 0);
+  x.fillStyle = 'rgba(0,0,0,.55)';
+  x.beginPath(); x.rect(0, 0, W, H); x.rect(r.x, r.y, r.w, r.h); x.fill('evenodd');
+  x.strokeStyle = '#fff';
+  x.globalAlpha = 0.45; x.lineWidth = u;
+  x.beginPath();
+  for (let i = 1; i < 8; i++) {
+    x.moveTo(r.x + r.w * i / 8, r.y); x.lineTo(r.x + r.w * i / 8, r.y + r.h);
+    x.moveTo(r.x, r.y + r.h * i / 8); x.lineTo(r.x + r.w, r.y + r.h * i / 8);
+  }
+  x.stroke();
+  x.globalAlpha = 1; x.lineWidth = 2 * u;
+  x.strokeRect(r.x, r.y, r.w, r.h);
+  // Asas en esquinas y centros de los lados, siempre dentro del lienzo para que se puedan agarrar
+  const hs = 14 * u, mx = r.x + r.w / 2, my = r.y + r.h / 2;
+  x.fillStyle = '#fff'; x.strokeStyle = '#000'; x.lineWidth = u;
+  [...corners(r), [mx, r.y], [r.x + r.w, my], [mx, r.y + r.h], [r.x, my]].forEach(([cx, cy]) => {
+    cx = clamp(cx, hs / 2, W - hs / 2); cy = clamp(cy, hs / 2, H - hs / 2);
+    x.fillRect(cx - hs / 2, cy - hs / 2, hs, hs); x.strokeRect(cx - hs / 2, cy - hs / 2, hs, hs);
+  });
+}
+
+const ppt = e => {
+  const b = pc.getBoundingClientRect();
+  return { x: clamp((e.clientX - b.left) * pc.width / b.width, 0, pc.width), y: clamp((e.clientY - b.top) * pc.height / b.height, 0, pc.height) };
+};
+
+// Qué hay bajo el puntero: esquina, lado, interior (mover) o fuera (recorte nuevo)
+function hitTest(p) {
+  const r = P.rect, tol = 20 * pc.width / pc.getBoundingClientRect().width;
+  const ci = corners(r).findIndex(([cx, cy]) => Math.abs(cx - p.x) < tol && Math.abs(cy - p.y) < tol);
+  if (ci >= 0) return { kind: 'corner', ci };
+  const inX = p.x > r.x && p.x < r.x + r.w, inY = p.y > r.y && p.y < r.y + r.h;
+  if (inY && Math.abs(p.x - r.x) < tol) return { kind: 'edge', side: 'l' };
+  if (inY && Math.abs(p.x - r.x - r.w) < tol) return { kind: 'edge', side: 'r' };
+  if (inX && Math.abs(p.y - r.y) < tol) return { kind: 'edge', side: 't' };
+  if (inX && Math.abs(p.y - r.y - r.h) < tol) return { kind: 'edge', side: 'b' };
+  // Si el recorte ocupa toda la foto, arrastrar dentro dibuja uno nuevo en vez de moverlo
+  const full = r.w > pc.width * 0.97 && r.h > pc.height * 0.97;
+  if (inX && inY && !full) return { kind: 'move' };
+  return { kind: 'new' };
+}
+const CURSORS = { corner: ['nwse-resize', 'nesw-resize'], l: 'ew-resize', r: 'ew-resize', t: 'ns-resize', b: 'ns-resize', move: 'move', new: 'crosshair' };
+const cursorFor = h => h.kind === 'corner' ? CURSORS.corner[h.ci % 2] : h.kind === 'edge' ? CURSORS[h.side] : CURSORS[h.kind];
+
+// Mueve un solo lado; con proporción bloqueada ajusta el otro eje manteniendo el centro
+function edgeRect(side, p) {
+  const r = P.rect, W = pc.width, H = pc.height, min = 10;
+  let { x, y, w, h } = r;
+  if (side === 'l') { const ax = r.x + r.w; x = Math.min(p.x, ax - min); w = ax - x; }
+  if (side === 'r') w = Math.max(min, p.x - r.x);
+  if (side === 't') { const ay = r.y + r.h; y = Math.min(p.y, ay - min); h = ay - y; }
+  if (side === 'b') h = Math.max(min, p.y - r.y);
+  if (P.lock) {
+    if (side === 'l' || side === 'r') {
+      const cy = r.y + r.h / 2, maxH = 2 * Math.min(cy, H - cy);
+      h = w / DNI_RATIO;
+      if (h > maxH) { h = maxH; const nw = h * DNI_RATIO; if (side === 'l') x += w - nw; w = nw; }
+      y = cy - h / 2;
+    } else {
+      const cx = r.x + r.w / 2, maxW = 2 * Math.min(cx, W - cx);
+      w = h * DNI_RATIO;
+      if (w > maxW) { w = maxW; const nh = w / DNI_RATIO; if (side === 't') y += h - nh; h = nh; }
+      x = cx - w / 2;
+    }
+  }
+  return { x, y, w, h };
+}
+
+pc.addEventListener('pointerdown', e => {
+  e.preventDefault();
+  pc.setPointerCapture(e.pointerId);
+  const p = ppt(e), r = P.rect, hit = hitTest(p);
+  if (hit.kind === 'corner') { const [ax, ay] = corners(r)[(hit.ci + 2) % 4]; P.drag = { kind: 'resize', ax, ay }; }
+  else if (hit.kind === 'edge') P.drag = { kind: 'edge', side: hit.side };
+  else if (hit.kind === 'move') P.drag = { kind: 'move', dx: p.x - r.x, dy: p.y - r.y };
+  else P.drag = { kind: 'resize', ax: p.x, ay: p.y };
+});
+pc.addEventListener('pointermove', e => {
+  const p = ppt(e), d = P.drag;
+  if (!d) { pc.style.cursor = cursorFor(hitTest(p)); return; }
+  if (d.kind === 'move') {
+    P.rect.x = clamp(p.x - d.dx, 0, pc.width - P.rect.w);
+    P.rect.y = clamp(p.y - d.dy, 0, pc.height - P.rect.h);
+  } else if (d.kind === 'edge') P.rect = edgeRect(d.side, p);
+  else P.rect = spanRect(d.ax, d.ay, p.x, p.y);
+  drawPrep();
+});
+const prepEnd = () => {
+  if (!P.drag) return;
+  P.drag = null;
+  if (P.rect.w < 10 || P.rect.h < 10) { const full = { x: 0, y: 0, w: pc.width, h: pc.height }; P.rect = P.lock ? fitRatio(full) : full; }
+  drawPrep();
+};
+pc.addEventListener('pointerup', prepEnd);
+pc.addEventListener('pointercancel', prepEnd);
+
+$('#prepL').onclick = () => { P.rot90 = (P.rot90 + 3) % 4; updateRotated(null); };
+$('#prepR').onclick = () => { P.rot90 = (P.rot90 + 1) % 4; updateRotated(null); };
+$('#prepAngle').addEventListener('input', e => {
+  P.fine = +e.target.value; $('#prepAngleOut').textContent = P.fine + '°';
+  updateRotated(normRect());
+});
+$('#prepLock').addEventListener('change', e => { P.lock = e.target.checked; if (P.lock) P.rect = fitRatio(P.rect); drawPrep(); });
+$('#prepReset').onclick = () => {
+  P.rot90 = 0; P.fine = 0; $('#prepAngle').value = 0; $('#prepAngleOut').textContent = '0°';
+  updateRotated(null);
+};
+$('#prepApply').onclick = applyPrep;
+$('#prepCancel').onclick = () => { if (P.isNew) applyPrep(); else $('#prep').hidden = true; };
+document.addEventListener('keydown', e => {
+  if ($('#prep').hidden) return;
+  if (e.key === 'Escape') $('#prepCancel').click();
+  else if (e.key === 'Enter' && e.target.tagName !== 'BUTTON') applyPrep();
+});
+
+// Aplica giro y recorte sobre la foto original a resolución completa
+function applyPrep() {
+  const s = P.s, crop = normRect();
+  const prep = { rot90: P.rot90, fine: P.fine, lock: P.lock, crop };
+  const geomChanged = P.isNew || JSON.stringify([prep.rot90, prep.fine, prep.crop]) !== JSON.stringify([s.prep.rot90, s.prep.fine, s.prep.crop]);
+  s.prep = prep;
+  const full = rotatedCanvas(s.orig, P.rot90 * 90 + P.fine);
+  const sx = crop.x * full.width, sy = crop.y * full.height, sw = crop.w * full.width, sh = crop.h * full.height;
+  const c = newCanvas(sw, sh);
+  c.getContext('2d').drawImage(full, sx, sy, sw, sh, 0, 0, c.width, c.height);
+  s.src = c; s.ver++;
+  if (geomChanged) s.zones = [];
+  s.root.classList.add('loaded');
+  $('#prep').hidden = true;
+  changed(s);
+}
+
+/* ---------- procesado ---------- */
+function processed(s, o) {
+  const key = JSON.stringify([s.ver, s.zones, o.gray, o.contrast, o.bright, o.pix]);
+  if (s.proc && s.procKey === key) return s.proc;
+  const c = newCanvas(s.src.width, s.src.height);
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.drawImage(s.src, 0, 0);
+  if (o.gray || o.contrast !== 1 || o.bright !== 0) tone(x, c, o);
+  for (const z of s.zones) redact(x, c, z, o);
+  s.proc = c; s.procKey = key;
+  return c;
+}
+
+function tone(x, c, o) {
+  const d = x.getImageData(0, 0, c.width, c.height), p = d.data;
+  for (let i = 0; i < p.length; i += 4) {
+    let r = p[i], g = p[i + 1], b = p[i + 2];
+    if (o.gray) r = g = b = 0.299 * r + 0.587 * g + 0.114 * b;
+    p[i] = (r - 128) * o.contrast + 128 + o.bright;
+    p[i + 1] = (g - 128) * o.contrast + 128 + o.bright;
+    p[i + 2] = (b - 128) * o.contrast + 128 + o.bright;
+  }
+  x.putImageData(d, 0, 0);
+}
+
+function addNoise(x, X, Y, W, H, amt, gray) {
+  if (!amt) return;
+  const d = x.getImageData(X, Y, W, H), p = d.data;
+  for (let i = 0; i < p.length; i += 4) {
+    if (gray) { const n = (Math.random() - 0.5) * 2 * amt; p[i] += n; p[i + 1] += n; p[i + 2] += n; }
+    else { p[i] += (Math.random() - 0.5) * 2 * amt; p[i + 1] += (Math.random() - 0.5) * 2 * amt; p[i + 2] += (Math.random() - 0.5) * 2 * amt; }
+  }
+  x.putImageData(d, X, Y);
+}
+
+// Las zonas se "queman" en los píxeles: no hay capas que se puedan quitar después
+function redact(x, c, z, o) {
+  const X = Math.round(z.x * c.width), Y = Math.round(z.y * c.height);
+  const W = Math.max(1, Math.min(c.width - X, Math.round(z.w * c.width)));
+  const H = Math.max(1, Math.min(c.height - Y, Math.round(z.h * c.height)));
+  if (z.type === 'solid') {
+    x.fillStyle = '#000';
+    x.fillRect(X, Y, W, H);
+    return;
+  }
+  if (z.type === 'pixel') {
+    const bs = Math.max(4, Math.round(c.width * o.pix / 100));
+    const d = x.getImageData(X, Y, W, H), p = d.data;
+    for (let by = 0; by < H; by += bs) for (let bx = 0; bx < W; bx += bs) {
+      const bw = Math.min(bs, W - bx), bh = Math.min(bs, H - by), n = bw * bh;
+      let r = 0, g = 0, b = 0;
+      for (let yy = by; yy < by + bh; yy++) for (let xx = bx; xx < bx + bw; xx++) {
+        const i = (yy * W + xx) * 4; r += p[i]; g += p[i + 1]; b += p[i + 2];
+      }
+      const j = (Math.random() - 0.5) * 50; // ruido por bloque: dificulta reconstruir el texto
+      r = r / n + j; g = g / n + j; b = b / n + j;
+      for (let yy = by; yy < by + bh; yy++) for (let xx = bx; xx < bx + bw; xx++) {
+        const i = (yy * W + xx) * 4; p[i] = r; p[i + 1] = g; p[i + 2] = b;
+      }
+    }
+    x.putImageData(d, X, Y);
+    return;
+  }
+  if (z.type === 'blur') {
+    const k = Math.max(4, Math.round(Math.min(W, H) / 4));
+    const t = newCanvas(W / k, H / k), tx = t.getContext('2d');
+    tx.imageSmoothingQuality = 'high';
+    tx.drawImage(c, X, Y, W, H, 0, 0, t.width, t.height);
+    x.save();
+    x.imageSmoothingEnabled = true; x.imageSmoothingQuality = 'high';
+    x.drawImage(t, 0, 0, t.width, t.height, X, Y, W, H);
+    x.restore();
+    addNoise(x, X, Y, W, H, 25, o.gray);
+  }
+}
+
+function wmLines(o) {
+  const lines = o.wmText.split('\n').map(l => l.trim()).filter(Boolean);
+  if (o.wmDate) lines.push(new Date().toLocaleDateString('es-ES'));
+  return lines;
+}
+
+function watermark(x, W, H, o) {
+  const lines = wmLines(o);
+  if (!lines.length && !o.lines) return;
+  const fs = Math.max(6, W * o.wmSize / 100), lh = fs * 1.2, diag = Math.hypot(W, H);
+  x.save();
+  x.fillStyle = x.strokeStyle = o.wmColor;
+  x.globalAlpha = o.wmOpacity;
+  x.translate(W / 2, H / 2);
+  x.rotate(-o.wmAngle * Math.PI / 180);
+  if (lines.length) {
+    x.font = `700 ${fs}px system-ui, -apple-system, Helvetica, Arial, sans-serif`;
+    x.textAlign = 'center'; x.textBaseline = 'middle';
+    const tw = Math.max(...lines.map(l => x.measureText(l).width));
+    const stepX = tw + fs * 2 * o.wmSpacing, stepY = lines.length * lh + fs * o.wmSpacing;
+    let row = 0;
+    for (let y = -diag / 2 - stepY; y < diag / 2 + stepY; y += stepY, row++) {
+      const off = (row % 2) * stepX / 2;
+      for (let cx = -diag / 2 - stepX + off; cx < diag / 2 + stepX; cx += stepX)
+        lines.forEach((l, i) => x.fillText(l, cx, y + (i - (lines.length - 1) / 2) * lh));
+    }
+  }
+  if (o.lines) {
+    x.globalAlpha = o.wmOpacity * 0.6;
+    x.lineWidth = Math.max(1, W / 800);
+    const amp = H * 0.025, per = W / 5, step = Math.max(8, fs * 0.8);
+    for (let y = -diag / 2; y < diag / 2; y += step) {
+      x.beginPath();
+      for (let t = -diag / 2; t <= diag / 2; t += 3) {
+        const yy = y + Math.sin(t / per * Math.PI * 2 + y * 0.07) * amp;
+        if (t === -diag / 2) x.moveTo(t, yy); else x.lineTo(t, yy);
+      }
+      x.stroke();
+    }
+  }
+  x.restore();
+}
+
+// Devuelve la cara recortada, con marca de agua y ruido, al ancho pedido
+function renderCard(s, o, targetW) {
+  const p = processed(s, o);
+  const c = newCanvas(targetW, targetW * p.height / p.width);
+  const x = c.getContext('2d', { willReadFrequently: true });
+  x.imageSmoothingQuality = 'high';
+  x.drawImage(p, 0, 0, c.width, c.height);
+  watermark(x, c.width, c.height, o);
+  addNoise(x, 0, 0, c.width, c.height, o.noise, o.gray);
+  return c;
+}
+
+function wrapText(x, text, maxW) {
+  const out = [];
+  for (const para of text.split('\n')) {
+    let line = '';
+    for (const w of para.split(/\s+/)) {
+      const t = line ? line + ' ' + w : w;
+      if (line && x.measureText(t).width > maxW) { out.push(line); line = w; } else line = t;
+    }
+    out.push(line);
+  }
+  return out;
+}
+
+function renderPages(o, dpi) {
+  const mm = dpi / 25.4, PW = Math.round(210 * mm), PH = Math.round(297 * mm);
+  const loaded = SIDES.filter(s => s.src);
+  const groups = o.layout === 'one' ? [loaded] : loaded.map(s => [s]);
+  return groups.map(g => {
+    const c = newCanvas(PW, PH), x = c.getContext('2d');
+    x.fillStyle = '#fff'; x.fillRect(0, 0, PW, PH);
+    const ratios = g.map(s => s.src.height / s.src.width);
+    const gap = 15 * mm, top = 25 * mm, avail = PH - top - 40 * mm;
+    let cw = { real: 85.6, x15: 128.4, fit: 180 }[o.scale] * mm;
+    const sumR = ratios.reduce((a, b) => a + b, 0);
+    cw = Math.min(cw, (avail - gap * (g.length - 1)) / sumR, PW - 30 * mm);
+    let y = top;
+    g.forEach((s, i) => {
+      const card = renderCard(s, o, Math.round(cw));
+      x.drawImage(card, Math.round((PW - cw) / 2), Math.round(y));
+      y += cw * ratios[i] + gap;
+    });
+    if (o.footer) {
+      const fs = 3.6 * mm;
+      x.fillStyle = '#222';
+      x.font = `${fs}px system-ui, -apple-system, Helvetica, Arial, sans-serif`;
+      x.textAlign = 'center'; x.textBaseline = 'alphabetic';
+      const ls = wrapText(x, o.footer, PW - 40 * mm);
+      ls.forEach((l, i) => x.fillText(l, PW / 2, PH - 20 * mm - (ls.length - 1 - i) * fs * 1.35));
+    }
+    return c;
+  });
+}
+
+/* ---------- PDF mínimo (cada página es una única imagen JPEG aplanada) ---------- */
+function buildPDF(pages, title) {
+  const enc = new TextEncoder(), chunks = [], offsets = [];
+  let len = 0;
+  const push = d => { const b = typeof d === 'string' ? enc.encode(d) : d; chunks.push(b); len += b.length; };
+  const obj = (n, body) => { offsets[n] = len; push(`${n} 0 obj\n`); body(); push('\nendobj\n'); };
+  const PW = 595.28, PH = 841.89, n = pages.length, total = 4 + 3 * n;
+  const now = new Date(), pad = v => String(v).padStart(2, '0');
+  const date = `D:${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}${pad(now.getHours())}${pad(now.getMinutes())}${pad(now.getSeconds())}`;
+
+  push('%PDF-1.4\n'); push(new Uint8Array([37, 226, 227, 207, 211, 10]));
+  obj(1, () => push('<< /Type /Catalog /Pages 2 0 R >>'));
+  obj(2, () => push(`<< /Type /Pages /Kids [${pages.map((_, i) => `${4 + 3 * i} 0 R`).join(' ')}] /Count ${n} >>`));
+  obj(3, () => push(`<< /Title (${title.replace(/[()\\]/g, '\\$&')}) /Producer (DNI Protegido) /CreationDate (${date}) >>`));
+  pages.forEach((p, i) => {
+    const pn = 4 + 3 * i, cn = pn + 1, im = pn + 2;
+    const content = `q ${PW} 0 0 ${PH} 0 0 cm /Im${i} Do Q`;
+    obj(pn, () => push(`<< /Type /Page /Parent 2 0 R /MediaBox [0 0 ${PW} ${PH}] /Resources << /XObject << /Im${i} ${im} 0 R >> >> /Contents ${cn} 0 R >>`));
+    obj(cn, () => push(`<< /Length ${content.length} >>\nstream\n${content}\nendstream`));
+    obj(im, () => {
+      push(`<< /Type /XObject /Subtype /Image /Width ${p.w} /Height ${p.h} /ColorSpace /DeviceRGB /BitsPerComponent 8 /Filter /DCTDecode /Length ${p.jpeg.length} >>\nstream\n`);
+      push(p.jpeg);
+      push('\nendstream');
+    });
+  });
+  const xref = len;
+  push(`xref\n0 ${total}\n0000000000 65535 f \n`);
+  for (let k = 1; k < total; k++) push(String(offsets[k]).padStart(10, '0') + ' 00000 n \n');
+  push(`trailer\n<< /Size ${total} /Root 1 0 R /Info 3 0 R >>\nstartxref\n${xref}\n%%EOF\n`);
+  return new Blob(chunks, { type: 'application/pdf' });
+}
+
+const toJpeg = (c, q) => new Promise(res => c.toBlob(res, 'image/jpeg', q));
+function download(blob, name) {
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = name;
+  document.body.appendChild(a); a.click(); a.remove();
+  setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+}
+const stamp = () => new Date().toISOString().slice(0, 10);
+
+$('#makePdf').onclick = async () => {
+  status('Generando PDF…');
+  await new Promise(r => setTimeout(r, 20));
+  const o = opts();
+  const pages = [];
+  for (const c of renderPages(o, o.dpi)) {
+    const jpeg = new Uint8Array(await (await toJpeg(c, o.quality)).arrayBuffer());
+    pages.push({ jpeg, w: c.width, h: c.height });
+  }
+  download(buildPDF(pages, 'DNI - copia protegida'), `dni_protegido_${stamp()}.pdf`);
+  status('PDF descargado.');
+};
+
+$('#makeJpg').onclick = async () => {
+  const o = opts();
+  const pages = renderPages(o, o.dpi);
+  for (let i = 0; i < pages.length; i++)
+    download(await toJpeg(pages[i], o.quality), `dni_protegido_${stamp()}${pages.length > 1 ? '_' + (i + 1) : ''}.jpg`);
+};
+
+/* ---------- vista ---------- */
+function drawView(s) {
+  if (!s.src) return;
+  const o = opts(), p = processed(s, o), v = s.view;
+  const k = Math.min(1, 1400 / Math.max(p.width, p.height));
+  if (v.width !== Math.round(p.width * k) || v.height !== Math.round(p.height * k)) { v.width = Math.round(p.width * k); v.height = Math.round(p.height * k); }
+  const x = v.getContext('2d'), W = v.width, H = v.height, lw = Math.max(2, W / 400);
+  x.drawImage(p, 0, 0, W, H);
+  s.zones.forEach((z, i) => {
+    x.strokeStyle = x.fillStyle = COLORS[z.type]; x.lineWidth = lw;
+    x.strokeRect(z.x * W, z.y * H, z.w * W, z.h * H);
+    x.font = `700 ${lw * 8}px system-ui, sans-serif`; x.textBaseline = 'top';
+    x.fillText(String(i + 1), z.x * W + lw * 2, z.y * H + lw * 2);
+  });
+  if (s.drag) {
+    const r = dragRect(s.drag);
+    x.setLineDash([lw * 3, lw * 2]); x.lineWidth = lw;
+    x.strokeStyle = COLORS[o.mode];
+    x.strokeRect(r.x * W, r.y * H, r.w * W, r.h * H); x.setLineDash([]);
+  }
+}
+
+function renderList(s) {
+  s.list.innerHTML = '';
+  const item = (color, text, onDel) => {
+    const li = document.createElement('li');
+    li.innerHTML = `<i style="background:${color}"></i><span></span><button title="Quitar">×</button>`;
+    li.querySelector('span').textContent = text;
+    li.querySelector('button').onclick = onDel;
+    s.list.appendChild(li);
+  };
+  s.zones.forEach((z, i) => item(COLORS[z.type], `${i + 1}. ${NAMES[z.type]}`, () => { s.zones.splice(i, 1); changed(s); }));
+}
+
+let previewTimer = 0;
+function schedulePreview() {
+  clearTimeout(previewTimer);
+  previewTimer = setTimeout(() => {
+    const has = SIDES.some(s => s.src);
+    $('#makePdf').disabled = $('#makeJpg').disabled = !has;
+    const box = $('#pages');
+    box.innerHTML = '';
+    if (!has) { box.innerHTML = '<p class="hint">Carga al menos una foto.</p>'; return; }
+    for (const c of renderPages(opts(), 110)) box.appendChild(c);
+  }, 120);
+}
+
+function changed(s) { drawView(s); renderList(s); schedulePreview(); }
+
+function syncOutputs() {
+  const fmt = { pix: v => v + ' %', contrast: v => v + ' %', bright: v => v, wmSize: v => v + ' %', wmOpacity: v => v + ' %',
+                wmAngle: v => v + '°', wmSpacing: v => v + ' %', noise: v => v, quality: v => v + ' %' };
+  for (const id in fmt) $('#' + id + 'Out').textContent = fmt[id]($('#' + id).value);
+}
+$('#panel').addEventListener('input', e => {
+  syncOutputs();
+  if (e.target.name === 'mode') return;
+  SIDES.forEach(drawView);
+  schedulePreview();
+});
+syncOutputs();
+</script>
+</body>
+</html>

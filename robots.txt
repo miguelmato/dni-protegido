@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://miguelmato.github.io/dni-protegido/sitemap.xml
